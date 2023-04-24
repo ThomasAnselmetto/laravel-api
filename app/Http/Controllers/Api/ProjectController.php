@@ -14,10 +14,21 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $projects = Project::where('published',true)->orderBy('updated_at', 'DESC')->get();
+    {   
+        // nel with dico di non darmi solo l'id sul front ma avro' il type e technology
+        // per non scriverlo tutte le volte(lazy loading) posso andare nel model e usare eager loading(ma appesantisce la richiesta)
+        // volendo si possono combinare es type lazy e technologies con eager e viceversa
 
-        return response()->json()
+        // $projects = Project::select('description') es di invio con restrizione alle description della api
+        // se voglio le technologies mi serve prendere l'id nella select
+        $projects = Project::where('published',true)
+        ->with('type','technologies')
+        ->orderBy('updated_at', 'DESC')
+        ->get();
+
+        // invio direttamente l'array senza creare un array associativo e non devo usare il .projects in js
+
+        return response()->json($projects);
 
     }
 

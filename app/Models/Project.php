@@ -36,6 +36,10 @@ class Project extends Model
     "name","commits",
     "contributors",
     "description","type_id","published"];
+    
+    // eager loading
+    // protected $with = ['type','technologies']
+
 // ci creiamo la nostra funzione per la logica di creazione dello slug
     public static function generateSlug($name){
 
