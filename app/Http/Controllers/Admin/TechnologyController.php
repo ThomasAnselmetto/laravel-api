@@ -19,7 +19,7 @@ class TechnologyController extends Controller
       $order = (!empty($order_request = $request->get('order'))) ? $order_request : 'DESC';
       $technologies = Technology::orderBy($sort, $order)->paginate(15)->withQueryString();
 
-        return view('admin.technologies.index',compact('technologies'));
+        return view('admin.technologies.index',compact('technologies','sort','order'));
     }
 
     /**

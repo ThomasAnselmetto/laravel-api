@@ -35,6 +35,7 @@ Route::middleware('auth')->prefix('/admin')->name('admin.')->group(function(){
 // ricorda sempre la resourse vuole questa sintassi nella rotta
 // mentre get e le altre questa
 
+// ! Controller per i projects
 Route::get('/projects/trash',[ProjectController::class, 'trash'])->name('projects.trash');
 
 Route::put('/projects/{project}/restore',[ProjectController::class, 'restore'])->name('projects.restore');
@@ -48,10 +49,10 @@ Route::resource('projects', ProjectController::class);
 Route::resource('types', TypeController::class);
 // ->parameters(['projects' => 'project:slug']); 
 
-// ! Controller per le technologies
 
-Route::get('/technologies/index',[ProjectController::class, 'index'])->name('technologies.index');
 });
+// ! Controller per le technologies
+Route::get('/admin.technologies.index',[TechnologyController::class, 'index'])->name('admin.technologies.index');
 
 
 // ! Controller per l'auth
