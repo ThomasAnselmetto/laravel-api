@@ -52,7 +52,7 @@ Route::resource('types', TypeController::class);
 
 });
 // ! Controller per le technologies
-Route::get('/admin.technologies.index',[TechnologyController::class, 'index'])->name('admin.technologies.index');
+Route::get('/admin/technologies/index',[TechnologyController::class, 'index'])->name('admin.technologies.index');
 
 
 // ! Controller per l'auth
