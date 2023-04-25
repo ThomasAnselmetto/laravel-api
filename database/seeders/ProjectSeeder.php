@@ -35,6 +35,7 @@ class ProjectSeeder extends Seeder
             // $project->project_preview_img = $faker->imageUrl(640, 480, 'animals', true);
             // $project->slug = Str::of($project->name)->slug('-');
             $project->description = $faker->paragraph(15);
+            $project->published = random_int(0, 1);
             $project->save();
         }
     }
