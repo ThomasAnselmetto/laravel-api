@@ -24,12 +24,12 @@ class ProjectController extends Controller
         $projects = Project::where('published',true)
         ->with('type','technologies')
         ->orderBy('updated_at', 'DESC')
-        ->get();
+        ->paginate(6);
 
         // invio direttamente l'array senza creare un array associativo e non devo usare il .projects in js
-        foreach($projects as $project){
-            $project->description = $project->getAbstract(200);
-          }
+        // foreach($projects as $project){
+        //     $project->description = $project->getAbstract(200);
+        //   }
 
         return response()->json($projects);
 
