@@ -30,6 +30,8 @@ class ProjectController extends Controller
       $sort = (!empty($sort_request = $request->get('sort'))) ? $sort_request : 'updated_at';
       $order = (!empty($order_request = $request->get('order'))) ? $order_request : 'DESC';
       $projects = Project::orderBy($sort, $order)->paginate(15)->withQueryString();
+
+      
       
       return view('admin.projects.index',compact('projects','sort','order'));
 
