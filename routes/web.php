@@ -28,7 +28,7 @@ Route::get('/', [GuestHomecontroller::class, 'index']);
 // stabilisco chi controlla questa rotta e come si chiama
 Route::get('/home',[ProjectController::class,'index'])->middleware('auth')->name('home');
 
-Route::get('/projects/{project:slug}',[ProjectController::class,'show'])->middleware('auth')->name('custom.show');
+// Route::get('/projects/{project:slug}',[ProjectController::class,'show'])->middleware('auth')->name('custom.show');
 
 Route::middleware('auth')->prefix('/admin')->name('admin.')->group(function(){
 
@@ -42,12 +42,12 @@ Route::put('/projects/{project}/restore',[ProjectController::class, 'restore'])-
 
 Route::delete('/projects/{project}/force-delete',[ProjectController::class, 'forceDelete'])->name('projects.force-delete');
 
-Route::resource('projects', ProjectController::class);
+Route::resource('projects', ProjectController::class)
+->parameters(['projects' => 'project:slug']); 
 
 // ! Controller per le types
 
 Route::resource('types', TypeController::class);
-// ->parameters(['projects' => 'project:slug']); 
 
 
 });
