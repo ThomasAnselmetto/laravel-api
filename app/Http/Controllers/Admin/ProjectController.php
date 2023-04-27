@@ -87,7 +87,7 @@ class ProjectController extends Controller
 
         ]);
         $data = $request->all();
-        // $data["slug"] = Project::generateSlug($data["name"]);
+        $data["slug"] = Project::generateSlug($data["name"]);
         $data["published"] = $request->has("published") ? 1 : 0;
 
         $path = null;
@@ -174,7 +174,7 @@ class ProjectController extends Controller
 
         ]);
         $data = $request->all();
-        // $data["slug"] = Project::generateSlug($data["name"]);
+        $data["slug"] = Project::generateSlug($data["name"]);
         $data["published"] = $request->has("published") ? 1 : 0;
         $path = null;
 
@@ -184,7 +184,7 @@ class ProjectController extends Controller
             //$data['image'] = $path;
         }
 
-        // $project->slug = Project::generateSlug($project->name);
+        $project->slug = Project::generateSlug($project->name);
         $project->project_preview_img = $path;
 
         $project->update($data);

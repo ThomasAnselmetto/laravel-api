@@ -52,11 +52,16 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // la dipendence injection non c'e' qui  prevede un findorfile
     public function show($id)
     {
-        //
-    }
+        $project = Project::where('id',$id)
+        ->with('type','technologies')->first();
 
+        if(!$project) return response(null, 404);
+        return response()->json($project);
+    }
+    // se non ho questo project dammi page404 senno dammi il dettaglio del project
     /**
      * Update the specified resource in storage.
      *
