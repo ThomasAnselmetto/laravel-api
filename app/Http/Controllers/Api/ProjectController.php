@@ -53,9 +53,9 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     // la dipendence injection non c'e' qui  prevede un findorfile
-    public function show($id)
+    public function show($slug)
     {
-        $project = Project::where('id',$id)
+        $project = Project::where('slug',$slug)
         ->with('type','technologies')->first();
 
         if(!$project) return response(null, 404);
