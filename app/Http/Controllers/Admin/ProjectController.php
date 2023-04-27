@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 // dopo aver spostato il controller dei progetti in admin(perche' e' qua che si gestiscono le crud) aggiungo admin al namespace e aggiungo lo use della rotta use App\Http\Controllers\Controller perche' dopo lo spostamento non era piu' leggibile class ProjectController extends Controller
 
 use App\Http\Controllers\Controller;
+use App\Mail\PublishedProjectMail;
 use Illuminate\Support\Str;
 
 use App\Models\Project;
@@ -13,6 +14,8 @@ use App\Models\Technology;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -87,8 +90,10 @@ class ProjectController extends Controller
 
         ]);
         $data = $request->all();
+
         $data["slug"] = Project::generateSlug($data["name"]);
         $data["published"] = $request->has("published") ? 1 : 0;
+        
 
         $path = null;
         if (Arr::exists($data, 'project_preview_img')) {
@@ -99,9 +104,18 @@ class ProjectController extends Controller
 
         $project = new Project;
         $project->fill($data);
+      
         $project->project_preview_img = $path;
        
         if(Arr::exists($data,'technologies'))
+        
+        $mail = new PublishedProjectMail($project);
+
+        // ? Auth ha diversi metodi,id,user(tutta l'istenza e cio' che e' presente nel database),email ecc
+
+        $user_email = Auth::user()->email;
+        Mail::to($user_email)->send($mail);
+
 
 
         // lo rimando alla vista show e gli invio sottoforma di parametro il progetto appena creato 
@@ -121,7 +135,8 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         // ritorniamo semplicemente la view della show e usiamo il compact per inviare array e le sue value
-       return view('admin.projects.show',compact('project'));
+       return view('admin.projects.show',compact('project','slug'));
+       
     }
 
     /**
@@ -187,9 +202,14 @@ class ProjectController extends Controller
         $project->slug = Project::generateSlug($project->name);
         $project->project_preview_img = $path;
 
+        
         $project->update($data);
         
-        if(Arr::exists($data,'technologies'))
+        $mail = new PublishedProjectMail($project);
+        $user_email = Auth::user()->email;
+        Mail::to($user_email)->send($mail);
+        
+            if(Arr::exists($data,'technologies'))
             $project->technologies()->sync($data['technologies']);
             else $project->technologies()->detach();
 
