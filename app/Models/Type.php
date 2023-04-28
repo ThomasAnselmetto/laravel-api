@@ -16,6 +16,6 @@ class Type extends Model
     }
 
     public function getBadgeHTML(){
-        return '<span class="badge " style="background-color:' . $this->color . '">' . $this->label . '</span>';
+        return '<span class="badge fs-6" style="background-color:' . $this->color . '">' . $this->label . '</span>';
     }
 }

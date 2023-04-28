@@ -17,7 +17,7 @@
     <div class="row">
      
       <div class="col-12 d-flex justify-content-end">
-        <a type="button" class="btn btn-success fw-bold" href="{{route('admin.projects.index')}}">Back to the list</a>
+        <a type="button" class="btn btn-success border fw-bold" href="{{route('admin.projects.index')}}">Back to the list</a>
       </div>
     </div>
     
@@ -99,7 +99,7 @@
         </tr>
       </thead>
       <tbody>
-        @foreach ($projects as $project)
+        @forelse ($projects as $project)
             
         <tr class="table-dark">
           <th scope="row">{{$project->id}}</th>
@@ -118,9 +118,13 @@
 
             <button class="bi bi-arrow-up-left-square-fill text-success delete-icon fs-3{{route('admin.projects.trash')}}?sort=" data-bs-toggle="modal" data-bs-target="#restore-modal-{{$project->id}}"></button>
           </td>
+          @empty
+          <td class="text-center" colspan="8">
+            Nothing in Trash Bin!
+          </td>
           
         </tr>
-        @endforeach
+        @endforelse
       </tbody>
     </table>
     {{ $projects->links('') }}

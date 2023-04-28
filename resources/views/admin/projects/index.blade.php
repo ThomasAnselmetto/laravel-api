@@ -129,7 +129,7 @@
         </tr>
         @empty
         <tr>
-          <td colspan="9">
+          <td class="text-center" colspan="9">
             No Data Here!
           </td>
         </tr>

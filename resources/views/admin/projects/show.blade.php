@@ -11,7 +11,7 @@
   @section('title')
     <h1 class="mt-4 mb-5">Project Detail</h1>
     @endsection
-  <h1 class="my-4">Project: {{$project->name}}</h1>
+  {{-- <h1 class="my-4">Project: {{$project->name}}</h1> --}}
   <div class="dettaglio-canzone row mt-1 mb-5">
     <div class="col-8 offset-2">
       <div class="card text-center">

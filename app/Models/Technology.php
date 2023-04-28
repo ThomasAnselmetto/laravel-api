@@ -13,6 +13,6 @@ class Technology extends Model
         return $this->belongsToMany(Project::class);
     }
     public function getBadgeHTML(){
-        return '<span class="badge rounded-pill" style="background-color:' . $this->color . '">' . $this->label . '</span>';
+        return '<span class="badge rounded-pill fs-7" style="background-color:' . $this->color . '">' . $this->label . '</span>';
     }
 }

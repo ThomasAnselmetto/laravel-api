@@ -15,6 +15,7 @@ use App\Models\Technology;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -104,7 +105,8 @@ class ProjectController extends Controller
 
         $project = new Project;
         $project->fill($data);
-      
+        $project->save();
+
         $project->project_preview_img = $path;
        
         if(Arr::exists($data,'technologies'))
@@ -116,12 +118,9 @@ class ProjectController extends Controller
         $user_email = Auth::user()->email;
         Mail::to($user_email)->send($mail);
 
-
-
+        Log::debug($project);
         // lo rimando alla vista show e gli invio sottoforma di parametro il progetto appena creato 
-        return to_route('admin.projects.show',$project)
-        ->with('message','Project created successfully');
-        // ->with('status', 'Profile updated!');;
+        return to_route('admin.projects.show', $project)->with('message',"Project $project->name Created successfully");
       }
 
 
@@ -189,15 +188,18 @@ class ProjectController extends Controller
             'technologies.exists'=>'Invalid Technology'
 
         ]);
+        
         $data = $request->all();
-        $data["slug"] = Project::generateSlug($data["name"]);
+
+        // $data["slug"] = Project::generateSlug($data["name"]);
         $data["published"] = $request->has("published") ? 1 : 0;
         $path = null;
 
         if (Arr::exists($data, 'project_preview_img')) {
+
             if($project->project_preview_img) Storage::delete($project->project_preview_img);
             $path = Storage::put('uploads/projects', $data['project_preview_img']);
-            //$data['image'] = $path;
+            
         }
 
         $project->slug = Project::generateSlug($project->name);

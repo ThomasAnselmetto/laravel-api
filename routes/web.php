@@ -19,21 +19,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// ! Controller per le rotte home.
+
+Route::get('/', [AdminHomecontroller::class, 'index']);
 Route::get('/', [GuestHomecontroller::class, 'index']);
-
-
-
-
-
-// stabilisco chi controlla questa rotta e come si chiama
 Route::get('/home',[ProjectController::class,'index'])->middleware('auth')->name('home');
+// stabilisco chi controlla questa rotta e come si chiama la funzione preposta
+
 
 // Route::get('/projects/{project:slug}',[ProjectController::class,'show'])->middleware('auth')->name('custom.show');
 
-Route::middleware('auth')->prefix('/admin')->name('admin.')->group(function(){
+// ? le rotte seguenti sono inserite in un group che assegnera' elementi comuni come prefisso inizio del name ecc
 
-// ricorda sempre la resourse vuole questa sintassi nella rotta
-// mentre get e le altre questa
+Route::middleware('auth')->prefix('/admin')->name('admin.')->group(function(){
 
 // ! Controller per i projects
 Route::get('/projects/trash',[ProjectController::class, 'trash'])->name('projects.trash');
@@ -45,12 +43,13 @@ Route::delete('/projects/{project}/force-delete',[ProjectController::class, 'for
 Route::resource('projects', ProjectController::class)
 ->parameters(['projects' => 'project:slug']); 
 
-// ! Controller per le types
 
+// ! Controller per le types
 Route::resource('types', TypeController::class);
 
-
 });
+
+
 // ! Controller per le technologies
 Route::get('/admin/technologies/index',[TechnologyController::class, 'index'])->name('admin.technologies.index');
 
