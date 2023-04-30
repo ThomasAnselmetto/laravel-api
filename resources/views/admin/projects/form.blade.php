@@ -24,16 +24,22 @@
 
          {{-- ! Image  --}}
         <div class="col-10">
-          <label class="form-label" for="project_preview_img">Image</label>
-
-          <input type="file" name="project_preview_img" id="project_preview_img" class="@error('project_preview_img') is-invalid @enderror form-control">
-          
-          @error('project_preview_img')
-          <div class="invalid-feedback">
-              {{$message}}
-          </div>
-          @enderror
+          <label for="project_preview_img" class="form-label">
+            Immagine    
+        </label> 
+        <input type="file" name="project_preview_img" id="project_preview_img" class="@error('project_preview_img') is-invalid @enderror form-control" value="{{old('project_preview_img', $project->project_preview_img)}}">
+        @error('project_preview_img')
+        <div class="invalid-feedback">
+            {{$message}}
         </div>
+        @enderror
+    </div>
+
+    <div class="col-4 border p-2">
+        <img src="{{$project->getImageUri()}}" alt="{{$project->title}}" class="img-fluid" id="image_preview">
+    </div>
+        </div>
+
         {{-- ! Name  --}}
         <div class="col-6 my-4">
           <label class="form-label" for="name">Name</label>
@@ -111,10 +117,7 @@
           </div> 
           @enderror
         </div>
-        {{-- ! Image Preview --}}
-        <div class="col-4 d-flex flex-wrap justify-content-end my-4">
-          <img src="{{$project->getImageUri()}}" class="img-fluid" alt="">
-        </div>
+        
 
         <input type="submit" class="btn btn-primary align-self-end fw-bold w-50" value="Save">
       </form>

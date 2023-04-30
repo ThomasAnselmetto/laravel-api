@@ -15,7 +15,6 @@ use App\Models\Technology;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -106,11 +105,11 @@ class ProjectController extends Controller
         $project = new Project;
         $project->fill($data);
         $project->slug = Project::generateSlug($project->name);
+        $project->project_preview_img = $path;
         $project->save();
         
         if(Arr::exists($data,'technologies'))$project->technologies()->attach($data["technologies"]);
         
-        $project->project_preview_img = $path;
         
         $mail = new PublishedProjectMail($project);
 
@@ -119,7 +118,7 @@ class ProjectController extends Controller
         $user_email = Auth::user()->email;
         Mail::to($user_email)->send($mail);
 
-        Log::debug($project);
+        
         // lo rimando alla vista show e gli invio sottoforma di parametro il progetto appena creato 
         return to_route('admin.projects.show', $project)->with('message',"Project $project->name Created successfully");
       }

@@ -51,13 +51,20 @@ class PublishedProjectMail extends Mailable
      */
     public function content()
     {
-    //  ?  view e' un alemento .blade con tutte le sue direttive
-
+        
     // * per la mail avremo un template apposta che si rifa' ad uno specifico elemento quindi potremmo avere uno scaffolding ben strutturato con mail_per_i_projects, mail_per_i_types ecc
+
+    $project = $this->project;
+    $published_text = $project->published ? 'Project created correctly' : 'Project ejected from the list';
 
         return new Content(
             view: 'mails.projects.published',
-            with: ['name' => $this->project->name]
+
+            // * possiamo creare array associativo con chiave valore oppure utilizzare ilcompact
+            // * with: ['project' => $project,
+            // * 'published_text' => $published_text
+            // * ]
+            with:compact('project','published_text'),
         );
     }
 

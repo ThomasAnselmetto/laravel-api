@@ -23,7 +23,7 @@ class Project extends Model
         return $this->belongsToMany(Technology::class);
     }
 
-    public function getAbstract($max = 20) {
+    public function getAbstract($max = 100) {
         return substr($this->description, 0 , $max) . "...";
     }
     // mutators per centralizzare caricamento immagini
@@ -61,15 +61,7 @@ class Project extends Model
 
     }
     // MUTATORS
-    // protected function getCreatedAtAttribute()
-    // {
-    //     return date('d/m/y h:i', strtotime($this->created_at));
-    // }
-
-    // protected function getUpdatedAtAttribute($value)
-    // {
-    //     return date('d/m/y h:i', strtotime($value));
-    // }
+    
         
 
     // questo tradotto sarebbe (trovami tutti i projects dove lo slug e' uguale allo slug che ho appena generato)
