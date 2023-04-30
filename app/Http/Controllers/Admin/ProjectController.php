@@ -110,13 +110,16 @@ class ProjectController extends Controller
         
         if(Arr::exists($data,'technologies'))$project->technologies()->attach($data["technologies"]);
         
-        
-        $mail = new PublishedProjectMail($project);
-
         // ? Auth ha diversi metodi,id,user(tutta l'istenza e cio' che e' presente nel database),email ecc
+        // * la mail viene mandare quando il progetto viene creato e allo stesso tempo è stato pubblicato
+        
+        if($project->published){
+            $mail = new PublishedProjectMail($project);
+            $user_email = Auth::user()->email;
+            Mail::to($user_email)->send($mail);
+        }
 
-        $user_email = Auth::user()->email;
-        Mail::to($user_email)->send($mail);
+
 
         
         // lo rimando alla vista show e gli invio sottoforma di parametro il progetto appena creato 
@@ -186,8 +189,9 @@ class ProjectController extends Controller
             'description.string'=> 'Description must be a text',
             'type_id.exists'=>'Invalid Type',
             'technologies.exists'=>'Invalid Technology'
-
         ]);
+
+        $initial_status = $project->published;
         
         $data = $request->all();
 
@@ -205,16 +209,18 @@ class ProjectController extends Controller
         $project->slug = Project::generateSlug($project->name);
         $project->project_preview_img = $path;
 
-        
         $project->update($data);
         
-        $mail = new PublishedProjectMail($project);
-        $user_email = Auth::user()->email;
-        Mail::to($user_email)->send($mail);
+        if($initial_status != $project->published){
+            $mail = new PublishedProjectMail($project);
+            $user_email = Auth::user()->email;
+            Mail::to($user_email)->send($mail);
+        }
+
         
-            if(Arr::exists($data,'technologies'))
-            $project->technologies()->sync($data['technologies']);
-            else $project->technologies()->detach();
+        if(Arr::exists($data,'technologies'))
+        $project->technologies()->sync($data['technologies']);
+        else $project->technologies()->detach();
 
 
         return to_route('admin.projects.show', $project)->with('message',"Project $project->name Modified successfully");
