@@ -20,7 +20,7 @@ return new class extends Migration
             // dafault 0,di norma non e' pubblicato
             $table->integer('contributors');
             $table->string('project_preview_img')->nullable();
-            $table->string('slug',100)->unique();
+            $table->string('slug');
             $table->text('description');
             $table->softDeletes();
             $table->timestamps();

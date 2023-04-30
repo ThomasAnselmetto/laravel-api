@@ -105,11 +105,12 @@ class ProjectController extends Controller
 
         $project = new Project;
         $project->fill($data);
+        $project->slug = Project::generateSlug($project->name);
         $project->save();
-
+        
+        if(Arr::exists($data,'technologies'))$project->technologies()->attach($data["technologies"]);
+        
         $project->project_preview_img = $path;
-       
-        if(Arr::exists($data,'technologies'))
         
         $mail = new PublishedProjectMail($project);
 
