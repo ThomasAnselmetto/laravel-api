@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use App\Models\Project;
 use App\Models\Type;
 use App\Models\Technology;
-
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -110,15 +110,26 @@ class ProjectController extends Controller
         
         if(Arr::exists($data,'technologies'))$project->technologies()->attach($data["technologies"]);
         
+        
+        
+        // ! se il progetto e' pubblicato,seleziona tutte le mail,di tutti gli utenti il cui id funziona cosi' pesca la mail e crea un array
         // ? Auth ha diversi metodi,id,user(tutta l'istenza e cio' che e' presente nel database),email ecc
-        // * la mail viene mandata quando il progetto viene creato e allo stesso tempo è stato pubblicato
+        // il where mi trova l'id senza problemi (SQL) il problema si pone nel momento in cui ho bisogno di stabilire relazioni rta tabelle (id fondamentale) o se devo usare elementi come il with()
         
         if($project->published){
+            $users =User::select('email')
+                ->where('id', '<>', Auth::id())
+                ->get()
+                ->pluck('email')
+                ->toArray();
+                
             $mail = new PublishedProjectMail($project);
-            $user_email = Auth::user()->email;
-            Mail::to($user_email)->send($mail);
+            foreach($users as $user){
+                Mail::to($user->email)->send($mail);
+            }
         }
-
+            
+           
 
 
         
