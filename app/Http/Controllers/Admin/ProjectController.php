@@ -95,23 +95,23 @@ class ProjectController extends Controller
         $data["published"] = $request->has("published") ? 1 : 0;
         
 
-        $path = null;
+        // $path = null;
         if (Arr::exists($data, 'project_preview_img')) {
             if($project->project_preview_img) Storage::delete($project->project_preview_img);
             $path = Storage::put('uploads/projects', $data['project_preview_img']);
-            //$data['image'] = $path;
+            $data['project_preview_img'] = $path;
         }
 
         $project = new Project;
         $project->fill($data);
         $project->slug = Project::generateSlug($project->name);
-        $project->project_preview_img = $path;
+        // $project->project_preview_img = $path;
         $project->save();
         
         if(Arr::exists($data,'technologies'))$project->technologies()->attach($data["technologies"]);
         
         // ? Auth ha diversi metodi,id,user(tutta l'istenza e cio' che e' presente nel database),email ecc
-        // * la mail viene mandare quando il progetto viene creato e allo stesso tempo è stato pubblicato
+        // * la mail viene mandata quando il progetto viene creato e allo stesso tempo è stato pubblicato
         
         if($project->published){
             $mail = new PublishedProjectMail($project);
@@ -197,17 +197,19 @@ class ProjectController extends Controller
 
         // $data["slug"] = Project::generateSlug($data["name"]);
         $data["published"] = $request->has("published") ? 1 : 0;
-        $path = null;
 
+        
+        // $path = null;
         if (Arr::exists($data, 'project_preview_img')) {
 
             if($project->project_preview_img) Storage::delete($project->project_preview_img);
             $path = Storage::put('uploads/projects', $data['project_preview_img']);
+            $data['project_preview_img'] = $path;
             
         }
 
         $project->slug = Project::generateSlug($project->name);
-        $project->project_preview_img = $path;
+        // $project->project_preview_img = $path;
 
         $project->update($data);
         

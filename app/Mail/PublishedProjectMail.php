@@ -56,15 +56,17 @@ class PublishedProjectMail extends Mailable
 
     $project = $this->project;
     $published_text = $project->published ? 'Project created correctly' : 'Project ejected from the list';
+    $button_url = env('APP_FRONTEND_URL') . '/projects/' . $project->slug;
 
         return new Content(
-            view: 'mails.projects.published',
+            markdown: 'mails.projects.published',
 
-            // * possiamo creare array associativo con chiave valore oppure utilizzare ilcompact
-            // * with: ['project' => $project,
-            // * 'published_text' => $published_text
-            // * ]
-            with:compact('project','published_text'),
+            // ? possiamo creare array associativo con chiave valore oppure utilizzare ilcompact
+            // ? with: ['project' => $project,
+            // ? 'published_text' => $published_text
+            // ? ]
+            
+            with:compact('project','published_text','button_url'),
         );
     }
 
