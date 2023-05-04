@@ -66,30 +66,8 @@ class ProjectController extends Controller
     public function store(Request $request, Project $project)
     //    il validate ha due argomenti che sono gli array 1(validazioni da fare)2(i messaggi d'errore)
        { 
-        $request->validate([
-            'project_preview_img'=>'nullable|image|mimes:jpg,png,jpeg',
-            'name'=>'required|string|max:100',
-            'contributors'=>'required|integer',
-            'description'=>'required|string',
-            'type_id'=>'nullable|exists:types,id',
-            'technologies'=>'nullable|exists:technologies,id'
-
-        ],
-        [
-            'project_preview_img.image'=> 'You need to enter an image',
-            'project_preview_img.mimes'=> 'You need to enter jpg,png or jpeg file',
-            'name.required'=> 'Name is Required',
-            'name.string'=> 'Name must be a string',
-            'name.max'=> 'The name must contain a maximum of 100 chars',
-            'contributors.required'=> 'Contributors are Required',
-            'contributors.integer'=> 'Contributors must be a number',
-            'description.required'=> 'Description is Required',
-            'description.string'=> 'Description must be a text',
-            'type_id.exists'=>'Invalid Type',
-            'technologies.exists'=>'Invalid Technology'
-
-        ]);
         $data = $request->all();
+        $this->validation($data);
 
         $data["slug"] = Project::generateSlug($data["name"]);
         $data["published"] = $request->has("published") ? 1 : 0;
@@ -117,15 +95,13 @@ class ProjectController extends Controller
         // il where mi trova l'id senza problemi (SQL) il problema si pone nel momento in cui ho bisogno di stabilire relazioni tra tabelle (id fondamentale) o se devo usare elementi come il with()
         
         if($project->published){
-            $mail = new PublishedProjectMail($project);
-            $user_email = Auth::user()->email;
-            Mail::to($user_email)->send($mail);
+            $this->sendPublishedMail($project);
 
         }
 
 
 
-
+        // blocco di di codice utile in caso di piu' utenti
         // if($project->published){
         //     $users =User::select('email')
         //         ->where('id', '<>', Auth::id())
@@ -188,33 +164,12 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         // $project->update($request->all());differenza tra update e fill che update riempie e salva insieme quindi se devo fare operazione nel mezzo faccio fill e save
-        $request->validate([
-            'project_preview_img'=>'nullable|image|mimes:jpg,png,jpeg',
-            'name'=>'required|string|max:100',
-            'published'=>'boolean',
-            'contributors'=>'required|integer',
-            'description'=>'required|string',
-            'type_id'=>'nullable|exists:types,id',
-            'technologies'=>'nullable|exists:technologies,id'
-
-        ],
-        [
-            'project_preview_img.image'=> 'You need to enter an image',
-            'project_preview_img.mimes'=> 'You need to enter jpg,png or jpeg file',
-            'name.required'=> 'Name is Required',
-            'name.string'=> 'Name must be a string',
-            'name.max'=> 'The name must contain a maximum of 100 chars',
-            'contributors.required'=> 'Contributors are Required',
-            'contributors.integer'=> 'Contributors must be a number',
-            'description.required'=> 'Description is Required',
-            'description.string'=> 'Description must be a text',
-            'type_id.exists'=>'Invalid Type',
-            'technologies.exists'=>'Invalid Technology'
-        ]);
+        
+        $data = $request->all();
+        $this->validation($data);
 
         $initial_status = $project->published;
         
-        $data = $request->all();
 
         // $data["slug"] = Project::generateSlug($data["name"]);
         $data["published"] = $request->has("published") ? 1 : 0;
@@ -235,9 +190,7 @@ class ProjectController extends Controller
         $project->update($data);
         
         if($initial_status != $project->published){
-            $mail = new PublishedProjectMail($project);
-            $user_email = Auth::user()->email;
-            Mail::to($user_email)->send($mail);
+            $this->sendPublishedMail($project);
         }
 
         
@@ -301,5 +254,41 @@ class ProjectController extends Controller
          $project->restore();
          return to_route('admin.projects.index')->with('message',"Project $id Restored");
     }
-        
+//!  creo una funzione per centralizzare l'invio delle mail
+    private function sendPublishedMail(Project $project){
+        $mail = new PublishedProjectMail($project);
+            $user_email = Auth::user()->email;
+            Mail::to($user_email)->send($mail);
+
+    }
+    
+    //! centralizzo la validazione
+    private function validation($data) {
+        Validator::make(
+          $data,
+          [
+            'project_preview_img'=>'nullable|image|mimes:jpg,png,jpeg',
+            'name'=>'required|string|max:100',
+            'published'=>'boolean',
+            'contributors'=>'required|integer',
+            'description'=>'required|string',
+            'type_id'=>'nullable|exists:types,id',
+            'technologies'=>'nullable|exists:technologies,id'
+
+        ],
+        [
+            'project_preview_img.image'=> 'You need to enter an image',
+            'project_preview_img.mimes'=> 'You need to enter jpg,png or jpeg file',
+            'name.required'=> 'Name is Required',
+            'name.string'=> 'Name must be a string',
+            'name.max'=> 'The name must contain a maximum of 100 chars',
+            'contributors.required'=> 'Contributors are Required',
+            'contributors.integer'=> 'Contributors must be a number',
+            'description.required'=> 'Description is Required',
+            'description.string'=> 'Description must be a text',
+            'type_id.exists'=>'Invalid Type',
+            'technologies.exists'=>'Invalid Technology'
+        ]
+        )
+      }
 }
