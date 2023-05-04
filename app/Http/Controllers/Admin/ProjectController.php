@@ -114,20 +114,30 @@ class ProjectController extends Controller
         
         // ! se il progetto e' pubblicato,seleziona tutte le mail,di tutti gli utenti il cui id funziona cosi' pesca la mail e crea un array
         // ? Auth ha diversi metodi,id,user(tutta l'istenza e cio' che e' presente nel database),email ecc
-        // il where mi trova l'id senza problemi (SQL) il problema si pone nel momento in cui ho bisogno di stabilire relazioni rta tabelle (id fondamentale) o se devo usare elementi come il with()
+        // il where mi trova l'id senza problemi (SQL) il problema si pone nel momento in cui ho bisogno di stabilire relazioni tra tabelle (id fondamentale) o se devo usare elementi come il with()
         
         if($project->published){
-            $users =User::select('email')
-                ->where('id', '<>', Auth::id())
-                ->get()
-                ->pluck('email')
-                ->toArray();
-                
             $mail = new PublishedProjectMail($project);
-            foreach($users as $user){
-                Mail::to($user->email)->send($mail);
-            }
+            $user_email = Auth::user()->email;
+            Mail::to($user_email)->send($mail);
+
         }
+
+
+
+
+        // if($project->published){
+        //     $users =User::select('email')
+        //         ->where('id', '<>', Auth::id())
+        //         ->get()
+        //         ->pluck('email')
+        //         ->toArray();
+                
+        //     $mail = new PublishedProjectMail($project);
+        //     foreach($users as $user){
+        //         Mail::to($user->email)->send($mail);
+        //     }
+        // }
             
            
 
