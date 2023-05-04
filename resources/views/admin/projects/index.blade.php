@@ -116,8 +116,8 @@
           </td>
           <td>{{$project->contributors}}</td>
           <td>{{$project->getAbstract()}}</td>
-          <td>{{$project->created_at}}</td>
           <td>{{$project->updated_at}}</td>
+          <td>{{$project->created_at}}</td>
           
           <td class="d-flex flex-column align-items-center justify-content-between gx-3">
             <a class="" href="{{ route('admin.projects.show', ['project' => $project ])}}"><i class="bi bi-aspect-ratio-fill text-primary fs-5  "></i></a>

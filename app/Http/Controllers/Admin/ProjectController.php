@@ -17,6 +17,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -264,7 +265,7 @@ class ProjectController extends Controller
     
     //! centralizzo la validazione
     private function validation($data) {
-        Validator::make(
+      return  Validator::make(
           $data,
           [
             'project_preview_img'=>'nullable|image|mimes:jpg,png,jpeg',
@@ -289,6 +290,6 @@ class ProjectController extends Controller
             'type_id.exists'=>'Invalid Type',
             'technologies.exists'=>'Invalid Technology'
         ]
-        )
-      }
+        )->validate();
+    }
 }

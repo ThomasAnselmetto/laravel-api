@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -60,8 +61,22 @@ class Project extends Model
         return $possible_slug;
 
     }
-    // MUTATORS
     
+    // MUTATORS
+    protected function getUpdatedAtAttribute($value){
+        Carbon::setLocale('en');
+        $date_from = Carbon::create($value);
+        $date_now = Carbon::now();
+        return str_replace('before','ago' , $diff_in_minutes = $date_from->diffForHumans($date_now));
+    }
+    // return $diff_in_minutes = Carbon::create($value)->diffForHumans(Carbon::now()); stessa cosa ma su una unica linea
+    protected function getCreatedAtAttribute($value){
+        Carbon::setLocale('en');
+        $date_from = Carbon::create($value);
+        $date_now = Carbon::now();
+        return str_replace('before','ago' , $diff_in_minutes = $date_from->diffForHumans($date_now));
+
+    }
         
 
     // questo tradotto sarebbe (trovami tutti i projects dove lo slug e' uguale allo slug che ho appena generato)
